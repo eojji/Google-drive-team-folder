@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <base target="_top">
+    <title>Team Folder Service</title>
+    <script>
+    
+   // Prevent forms from submitting.
+      function preventFormSubmit() {
+        var forms = document.querySelectorAll('form');
+        for (var i = 0; i < forms.length; i++) {
+          forms[i].addEventListener('submit', function(event) {
+            event.preventDefault();
+          });
+        }
+      }
+      window.addEventListener('load', preventFormSubmit);
+
+      function handleFormSubmit(formObject) {
+        google.script.run.withSuccessHandler(updateUrl).processForm(formObject);
+      }
+      function updateUrl(rtn) {
+        var div = document.getElementById('formOutput');
+        div.innerHTML = '<p>' + rtn + '</p>';
+      }             
+      
+      function onSuccess(email) {
+          var urlSheet = 'https://script.google.com/macros/s/AKfycbzpxos1ru6Ip0SUgqPXJU-mtKvgQASU9kYrDpYWIKyJ2PVFnr6l/exec?email=' + email;
+          var div = document.getElementById('copyOutput');
+          div.innerHTML = '<a href="'+ urlSheet +'">폴더 복사 요청</a>';
+      }  
+      google.script.run.withSuccessHandler(onSuccess)
+          .getEmailBySession();       
+    
+      function updateButton(folder, button) {
+        button.value = 'Created Folder: ' + folder;
+      }
+    </script>    
+  </head>
+  <body>
+  <h1>Team Folder Service</h1>
+
+    <form id="myForm" onsubmit="handleFormSubmit(this)">
+      <b>Input Center Email and Folder</b> 
+      <br /><br />
+      Center email: 
+      <input id="email" name="email" type="text" value="backup@eojji.net"  />
+      <br /><br />     
+      Team folder name: 
+      <input id="folder" name="folder" type="text" value="eojji-folder" />
+      <br /><br />            
+      <input type="submit" value="Submit" />
+    </form>    
+    <div id="formOutput"></div>
+    <br>
+    <hr />
+    <br>
+    <p>Create Folder 버튼을 클릭하세요. Google Drive에 Team folder를 만들고 Center 계정과 공유합니다.</p>        
+    <input type="button" value="Create Folder"
+      onclick="google.script.run
+          .withSuccessHandler(updateButton)
+          .withUserObject(this)
+          .teamFolder()" />                         
+   <p>위의 버튼을 클릭 후 결과 확인 >> <a href="https://drive.google.com/drive/my-drive" target="_blank">Google Drive</a></p>   
+   <br>
+   <hr />
+   <br>
+   <p>Google Drive의 폴더나 파일을 Team folder로 이동하세요.</p> 
+   <br>
+   <hr />
+   <br>
+   <p>Team folder의 복사본을 만들기 위해서 클릭 >>
+   <div id="copyOutput"></div>
+   <p>복사본 확인을 위해서 클릭 >>
+   <a href="https://drive.google.com/drive/shared-with-me" target="_blank">공유 문서함</a>
+   <br>Google Drive의 공유 문서함에서 자신의 이메일과 같은 폴더를 찾으세요.
+   <br>이 폴더에서 Team folder의 복사본을 찾을 수 있습니다.</p>      
+   <br>
+   <hr />
+   <br>
+   참조: <a href="https://goo.gl/DKGJke">Team folder service</a>
+   <br>
+   주소: <a href="https://goo.gl/DKGJke">https://goo.gl/DKGJke</a>   
+  </body>
+</html>
